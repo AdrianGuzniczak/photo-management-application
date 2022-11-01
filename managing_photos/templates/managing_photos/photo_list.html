@@ -10,12 +10,9 @@
                 {% for photo in photo_list %} 
                 <div class="col-lg-6">
                     <!-- Blog post-->
-
                     <div class="card mb-4">
-                        {% comment %} ['albumId', 'id', 'title', 'url', 'thumbnailUrl'] {% endcomment %}
-
-                        {% if photo.url %}
-                            <a href="#!"><img class="card-img-top" src="{{photo.url}}" alt="{{photo.title}}" /></a>
+                        {% if photo.image %}
+                            <a href="#!"><img class="card-img-top" src="{{photo.image.url}}" alt="{{photo.title}}" /></a>
                         {% endif %}
 
                         <div class="card-body">

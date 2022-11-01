@@ -12,7 +12,7 @@ class Photo(models.Model):
     url = models.URLField(null=True, blank=True)
 
     thumbnailUrl = models.URLField(null=True, blank=True)
-    # image = models.ImageField(upload_to='images')
+    image = models.ImageField(upload_to='images')
 
     width = models.IntegerField(null=True, blank=True)
     height = models.IntegerField(null=True, blank=True)

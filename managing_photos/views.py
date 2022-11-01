@@ -1,13 +1,20 @@
 import json
-from django.urls import reverse_lazy
-from django.views.generic import ListView, UpdateView, TemplateView
-from django.http import HttpResponse
+import tempfile
+import urllib
+import urllib.request
 from rest_framework.renderers import JSONRenderer
+import requests
+from django.views.generic import ListView, UpdateView, TemplateView
+from django.urls import reverse_lazy
+from django.http import HttpResponse
+from django.core import files
 from django.shortcuts import redirect
 from .models import Photo
 from .serializers import PhotoSerializer
 from .forms import PhotoForm
-import urllib.request
+
+
+
 
 def create_photo(request):
     if request.method == 'POST':
@@ -17,11 +24,15 @@ def create_photo(request):
     return redirect('managing_photos:list_photo')
 
 def delete_all(request):
+    for photo in Photo.objects.all():
+        photo.image.delete(save=True)
     Photo.objects.all().delete()
+
     return redirect('managing_photos:list_photo')
 
 def delete_photo(request, id):
-    Photo.objects.filter(id=id).delete()
+    Photo.objects.get(id=id).image.delete(save=True)
+    Photo.objects.get(id=id).delete()
     return redirect('managing_photos:list_photo')
 
 class PhotoListView(ListView):
@@ -41,6 +52,25 @@ class PhotoUpdateView(UpdateView):
     fields = ['title', 'albumId', 'url']
     success_url = reverse_lazy('managing_photos:list_photo')
 
+def create_object_from_json(json_data):
+    for i in range(len(json_data)):
+        response = requests.get(json_data[i]['url'], stream=True)
+        file_name = json_data[i]['url'].split('/')[-1]
+        lf = tempfile.NamedTemporaryFile()
+
+        for block in response.iter_content(1024 * 8):
+            lf.write(block)
+
+        photo = Photo(albumId = json_data[i]['albumId'], id = json_data[i]['id'],\
+            title = json_data[i]['title'], url = json_data[i]['url'],thumbnailUrl = json_data[i]['thumbnailUrl'],\
+                width = 1111,height = 3333, hexcolorDominant = '#234567')
+        photo.image.save(file_name, files.File(lf))
+
+        photo.save()
+    return True
+
+
+
 def api_link(request):
 
     try:
@@ -48,14 +78,12 @@ def api_link(request):
         print(url)
         with urllib.request.urlopen(url) as url:
             json_data = json.load(url)
-            for i in range(len(json_data)):
-                print(i)
-                serializer = PhotoSerializer(data=json_data[i])
-                if serializer.is_valid():
-                    serializer.save()
-        return redirect('managing_photos:list_photo')
+            if create_object_from_json(json_data):
+                return redirect('managing_photos:list_photo')
+
     except:
         return redirect('managing_photos:upload_fail')
+
 
 def upload(request):
     try:
@@ -63,16 +91,11 @@ def upload(request):
             json_raw = request.FILES['document']
             json_data = json_raw.read().decode()
             json_data = json.loads(json_data)
-            for i in range(len(json_data)):
-                print(i)
-                serializer = PhotoSerializer(data=json_data[i])
-                if serializer.is_valid():
-                    serializer.save()
-            return redirect('managing_photos:list_photo')
+            if create_object_from_json(json_data):
+                return redirect('managing_photos:list_photo')
+
     except:
         return redirect('managing_photos:upload_fail')
-
-
 
 
 class UploadFail(TemplateView):
