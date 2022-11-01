@@ -3,12 +3,11 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, UpdateView, TemplateView
 from django.http import HttpResponse
 from rest_framework.renderers import JSONRenderer
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 from .models import Photo
 from .serializers import PhotoSerializer
 from .forms import PhotoForm
-
+import urllib.request
 
 def create_photo(request):
     if request.method == 'POST':
@@ -17,7 +16,7 @@ def create_photo(request):
             form.save()
     return redirect('managing_photos:list_photo')
 
-def delete_all():
+def delete_all(request):
     Photo.objects.all().delete()
     return redirect('managing_photos:list_photo')
 
@@ -42,23 +41,42 @@ class PhotoUpdateView(UpdateView):
     fields = ['title', 'albumId', 'url']
     success_url = reverse_lazy('managing_photos:list_photo')
 
-@csrf_exempt
-def upload(request):
-    if request.method == 'POST':
-        json_raw = request.FILES['document']
-        json_data = json_raw.read().decode()
-        json_data = json.loads(json_data)
+def api_link(request):
 
-        for i in range(len(json_data)):
-            print(i)
-            serializer = PhotoSerializer(data=json_data[i])
-            if serializer.is_valid():
-                serializer.save()
-                # res = {'msg': 'Data Created Successfully'}
-                # json_data = JSONRenderer().render(res)
-        #     return HttpResponse(json_data, content_type='application/json')
-        # return HttpResponse(JSONRenderer().render(serializer.errors), content_type='application/json')
-    return redirect('managing_photos:list_photo')
+    try:
+        url = request.GET.get('document')
+        print(url)
+        with urllib.request.urlopen(url) as url:
+            json_data = json.load(url)
+            for i in range(len(json_data)):
+                print(i)
+                serializer = PhotoSerializer(data=json_data[i])
+                if serializer.is_valid():
+                    serializer.save()
+        return redirect('managing_photos:list_photo')
+    except:
+        return redirect('managing_photos:upload_fail')
+
+def upload(request):
+    try:
+        if request.method == 'POST':
+            json_raw = request.FILES['document']
+            json_data = json_raw.read().decode()
+            json_data = json.loads(json_data)
+            for i in range(len(json_data)):
+                print(i)
+                serializer = PhotoSerializer(data=json_data[i])
+                if serializer.is_valid():
+                    serializer.save()
+            return redirect('managing_photos:list_photo')
+    except:
+        return redirect('managing_photos:upload_fail')
+
+
+
+
+class UploadFail(TemplateView):
+    template_name = 'managing_photos/upload_fail.html'
 
 class ObjectsView(TemplateView):
     template_name = 'managing_photos/objects_view.html'

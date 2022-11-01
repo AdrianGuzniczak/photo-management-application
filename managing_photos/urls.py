@@ -1,5 +1,5 @@
 from django.urls import path
-from managing_photos.views import PhotoListView,  PhotoUpdateView, ObjectsView
+from managing_photos.views import PhotoListView,  PhotoUpdateView, ObjectsView, UploadFail
 from . import views
 
 app_name = 'managing_photos'
@@ -11,5 +11,7 @@ urlpatterns = [
     path('upload/', views.upload, name = 'upload'),
     path('objects_view/', ObjectsView.as_view(), name = 'objects_name'),
     path('delete_all/', views.delete_all, name='delete_all'),
-    path('create_photo/', views.create_photo, name = 'create_photo')
+    path('create_photo/', views.create_photo, name = 'create_photo'),
+    path('upload_fail/', UploadFail.as_view(), name = 'upload_fail'),
+    path('api_link/', views.api_link, name = 'api_link')
 ]

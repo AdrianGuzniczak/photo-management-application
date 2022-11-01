@@ -1,7 +1,6 @@
 {% extends 'main.html' %}
 {% block content %}
 
-<!-- Page content-->
 <div class="container">
     <div class="row">
         <!-- Blog entries-->
@@ -13,14 +12,45 @@
                     <!-- Blog post-->
 
                     <div class="card mb-4">
-                        {% comment %} {% if post.image %} {% endcomment %}
-                        {% comment %} <a href="#!"><img class="card-img-top" src="{{photo.title}}" alt="..." /></a> {% endcomment %}
-                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                        {% comment %} {% endif %} {% endcomment %}
+                        {% comment %} ['albumId', 'id', 'title', 'url', 'thumbnailUrl'] {% endcomment %}
+
+                        {% if photo.url %}
+                            <a href="#!"><img class="card-img-top" src="{{photo.url}}" alt="{{photo.title}}" /></a>
+                        {% endif %}
+
                         <div class="card-body">
-                            <h2 class="card-title h4">{{photo.title}}</h2>
-                            <p class="card-text">{{photo.title}}</p>
-                                                            {% comment %} '{% url 'managing_photos:upload' %}' {% endcomment %}
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">{{photo.title}}</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">{{photo.id}}</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Album ID</th>
+                                        <td>{{photo.albumId}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">URL</th>
+                                        <td>{{photo.url}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">WIDTH</th>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">HEIGHT</th>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">COLOR</th>
+                                        <td>-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             <a class="btn btn-primary" href="{% url 'managing_photos:delete_photo' photo.id %}">Delete</a>
                             <a class="btn btn-primary" href="{% url 'managing_photos:photo_update' photo.id %}">Update</a>
                         </div>
@@ -62,25 +92,29 @@
         <!-- Side widgets-->
         <div class="col-lg-4">
             <!-- Search widget-->
-            <div class="card mb-4">
-                <div class="card-header">Import photos from external API</div>
-                <div class="card-body">
-                    <div class="input-group">
-                        <input class="form-control" type="text" value="https://jsonplaceholder.typicode.com/photos" aria-label="Enter search term..." aria-describedby="button-search" />
-                        <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-                    </div>
-                </div>
-            </div>
+
             <div class="card mb-4">
                 <div class="card-header">Import photos from .json file</div>
                 <div class="card-body">
-                    <form method="post" action = '{% url 'managing_photos:upload' %}' enctype="multipart/form-data">
+                    <form action = '{% url 'managing_photos:upload' %}' enctype="multipart/form-data" method="post">
                         {% csrf_token %}
                         <div class="input-group">
-                            <input type="file" name="document" type="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                            <input type="submit" class="btn btn-primary" value="Upload!">
+                            <input type="file" class="form-control" name="document" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                            <input type="submit" class="btn btn-primary" value="Upload!"> 
                         </div>
                     </form>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">Import photos from external API</div>
+                <div class="card-body">
+                    <form action = '{% url 'managing_photos:api_link' %}' method="get">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input class="form-control"  name="document" type="text" value="https://jsonplaceholder.typicode.com/photos" aria-label="Enter search term..." aria-describedby="button-search" />
+                            <input type="submit" class="btn btn-primary" value="Upload!">
+                        </div>
+                    <form>
                 </div>
             </div>
             <div class="card mb-4">
