@@ -11,8 +11,14 @@
                 <div class="col-lg-6">
                     <!-- Blog post-->
                     <div class="card mb-4">
-                        {% if photo.image %}
-                            <a href="#!"><img class="card-img-top" src="{{photo.image.url}}" alt="{{photo.title}}" /></a>
+                        
+                        {% if photo.hexcolorDominant != '-------' %}
+                            {% if debug %}
+                                <a href="{{MEDIA_URL}}{{photo.image.url}}"><img class="card-img-top" src="{{photo.image.url}}" alt="{{photo.title}}" /></a>
+                            {% endif %}
+                        {% else %}
+                            <h4>The photo cannot be accessed.</h4>
+                            <p>Check "url" in the dictionary or use the exaple.json file.</p>
                         {% endif %}
 
                         <div class="card-body">
@@ -32,19 +38,19 @@
                                     </tr>
                                     <tr>
                                         <th scope="row">URL</th>
-                                        <td>{{photo.url}}</td>
+                                        <td><a href="{{MEDIA_URL}}{{photo.image.url}}">{{MEDIA_URL}}{{photo.image.url}}</a></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">WIDTH</th>
-                                        <td>-</td>
+                                        <th scope="row">Width</th>
+                                        <td>{{photo.width}}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">HEIGHT</th>
-                                        <td>-</td>
+                                        <th scope="row">Height</th>
+                                        <td>{{photo.height}}</td>
                                     </tr>
                                     <tr>
-                                        <th scope="row">COLOR</th>
-                                        <td>-</td>
+                                        <th scope="row">Dominant color</th>
+                                        <td>{{photo.hexcolorDominant}}</td>
                                     </tr>
                                 </tbody>
                             </table>

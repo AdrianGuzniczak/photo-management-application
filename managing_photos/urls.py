@@ -15,3 +15,5 @@ urlpatterns = [
     path('upload_fail/', UploadFail.as_view(), name = 'upload_fail'),
     path('api_link/', views.api_link, name = 'api_link')
 ]
+
+handler404 = 'managing_photos.views.error_404_view' 
