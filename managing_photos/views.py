@@ -10,7 +10,7 @@ from django.views.generic import ListView, UpdateView, TemplateView
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.core import files
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 import imageio
 import numpy as np
 from .models import Photo
@@ -37,6 +37,9 @@ class PhotoUpdateView(UpdateView):
 class UploadFail(TemplateView):
     template_name = 'managing_photos/upload_fail.html'
 
+class ConfirmAllDelete(TemplateView):
+    template_name = 'managing_photos/confirm_all_delete.html'
+
 class ObjectsView(TemplateView):
     template_name = 'managing_photos/objects_view.html'
 
@@ -47,6 +50,11 @@ class ObjectsView(TemplateView):
         return HttpResponse(json_data, content_type='application/json')
 
 def create_object_from_json(json_data):
+    '''
+    The function creates a Photo model object and obtains
+    information about photos (dominant color, width, height).
+    '''
+
     for i in range(len(json_data)):
         response = requests.get(json_data[i]['thumbnailUrl'])
         file_name = json_data[i]['url'].split('/')[-1]
@@ -80,6 +88,9 @@ def create_object_from_json(json_data):
     return True
 
 def api_link(request):
+    """
+    The function loads the json data from the external api.
+    """
     try:
         url = request.GET.get('document')
         with urllib.request.urlopen(url) as url:
@@ -91,6 +102,9 @@ def api_link(request):
         return redirect('managing_photos:upload_fail')
 
 def upload(request):
+    """
+    The function loads json data from the form.
+    """
     try:
         if request.method == 'POST':
             json_raw = request.FILES['document']
@@ -113,6 +127,9 @@ def create_photo(request):
     return redirect('managing_photos:list_photo')
 
 def delete_all(request):
+    """
+    The function removes all objects from the Photo model along with photos from the media/img folder.
+    """
     for photo in Photo.objects.all():
         photo.image.delete(save=True)
     Photo.objects.all().delete()

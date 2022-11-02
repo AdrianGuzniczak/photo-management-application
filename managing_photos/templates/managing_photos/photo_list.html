@@ -95,6 +95,12 @@
         <!-- Side widgets-->
         <div class="col-lg-4">
             <!-- Search widget-->
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">Information</h4>
+                <p>After pressing the "Upload!" photos are loading in the background. You can use the site.</p>
+                <hr>
+                <p class="mb-0">The Delete All Photos button works for photos that have been uploaded, not those that are just loading.</p>
+            </div>
 
             <div class="card mb-4">
                 <div class="card-header">Import photos from .json file</div>
@@ -144,7 +150,7 @@
             <div class="card mb-4">
                 <div class="card-header">Delete all photos</div>
                 <div class="card-body">
-                    <a href = '{% url 'managing_photos:delete_all' %}'><button type="button" class="btn btn-danger">Delete All Photos</button></a>
+                    <a href = '{% url 'managing_photos:confirm_all_delete' %}'><button type="button" class="btn btn-danger">Delete All Photos</button></a>
                 </div>
             </div>
         </div>
