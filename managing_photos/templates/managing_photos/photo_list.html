@@ -13,8 +13,10 @@
                     <div class="card mb-4">
                         
                         {% if photo.hexcolorDominant != '-------' %}
-                            {% if debug %}
+                            {% if debug  %}
+                                {% if photo.image %}
                                 <a href="{{MEDIA_URL}}{{photo.image.url}}"><img class="card-img-top" src="{{photo.image.url}}" alt="{{photo.title}}" /></a>
+                                {% endif %}
                             {% endif %}
                         {% else %}
                             <h4>The photo cannot be accessed.</h4>
@@ -36,22 +38,24 @@
                                         <th scope="row">Album ID</th>
                                         <td>{{photo.albumId}}</td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row">URL</th>
-                                        <td><a href="{{MEDIA_URL}}{{photo.image.url}}">{{MEDIA_URL}}{{photo.image.url}}</a></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Width</th>
-                                        <td>{{photo.width}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Height</th>
-                                        <td>{{photo.height}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Dominant color</th>
-                                        <td>{{photo.hexcolorDominant}}</td>
-                                    </tr>
+                                    {% if photo.image %}
+                                        <tr>
+                                            <th scope="row">URL</th>
+                                            <td><a href="{{MEDIA_URL}}{{photo.image.url}}">{{MEDIA_URL}}{{photo.image.url}}</a></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Width</th>
+                                            <td>{{photo.width}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Height</th>
+                                            <td>{{photo.height}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Dominant color</th>
+                                            <td>{{photo.hexcolorDominant}}</td>
+                                        </tr>
+                                    {% endif %}
                                 </tbody>
                             </table>
                             <a class="btn btn-primary" href="{% url 'managing_photos:delete_photo' photo.id %}">Delete</a>
@@ -101,7 +105,27 @@
                 <hr>
                 <p class="mb-0">The Delete All Photos button works for photos that have been uploaded, not those that are just loading.</p>
             </div>
-
+            <div class="card mb-4">
+                <div class="card-header">Add photo</div>
+                <div class="card-body">
+                    <form method="POST" action = '{% url 'managing_photos:create_photo' %}'>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="formGroupExampleInput">Title</label></br>
+                            {{ form.title }}
+                        </div>
+                        <div class="form-group">
+                            <label for="formGroupExampleInput2">album ID</label></br>
+                            {{ form.albumId}}
+                        </div>
+                        <div class="form-group">
+                            <label for="formGroupExampleInput2">URL</label></br>
+                            {{ form.url}}
+                        </div>
+                        <input type="submit" class="btn btn-primary" value="Add!">
+                    </form>
+                </div>
+            </div>
             <div class="card mb-4">
                 <div class="card-header">Import photos from .json file</div>
                 <div class="card-body">
@@ -124,27 +148,6 @@
                             <input type="submit" class="btn btn-primary" value="Upload!">
                         </div>
                     <form>
-                </div>
-            </div>
-            <div class="card mb-4">
-                <div class="card-header">Add photo</div>
-                <div class="card-body">
-                    <form method="POST" action = '{% url 'managing_photos:create_photo' %}'>
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="formGroupExampleInput">Title</label></br>
-                            {{ form.title }}
-                        </div>
-                        <div class="form-group">
-                            <label for="formGroupExampleInput2">album ID</label></br>
-                            {{ form.albumId}}
-                        </div>
-                        <div class="form-group">
-                            <label for="formGroupExampleInput2">URL</label></br>
-                            {{ form.url}}
-                        </div>
-                        <input type="submit" class="btn btn-primary" value="Add!">
-                    </form>
                 </div>
             </div>
             <div class="card mb-4">
