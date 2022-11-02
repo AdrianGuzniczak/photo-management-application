@@ -3,6 +3,7 @@ import tempfile
 import urllib
 import urllib.request
 from io import BytesIO
+from random import randrange
 import traceback
 from rest_framework.renderers import JSONRenderer
 import requests
@@ -54,7 +55,6 @@ def create_object_from_json(json_data):
     The function creates a Photo model object and obtains
     information about photos (dominant color, width, height).
     '''
-
     for i in range(len(json_data)):
         response = requests.get(json_data[i]['thumbnailUrl'])
         file_name = json_data[i]['url'].split('/')[-1]
@@ -83,7 +83,11 @@ def create_object_from_json(json_data):
             width = img.shape[1], height = img.shape[0],
             hexcolorDominant = hex_dominat)
 
-        photo.image.save(file_name, files.File(lf))
+        try:
+            photo.image.save(file_name, files.File(lf))
+        except:
+            pass
+        
         photo.save()
     return True
 
@@ -123,15 +127,24 @@ def create_photo(request):
     if request.method == 'POST':
         form = PhotoForm(request.POST)
         if form.is_valid():
-            form.save()
+
+            dict_form = [{
+                'id': randrange(5000,10000),
+                'title': form.cleaned_data.get('title'),
+                'url': form.cleaned_data.get('url'),
+                'albumId': form.cleaned_data.get('albumId'),
+                'thumbnailUrl': form.cleaned_data.get('url')
+            }]
+            dict_form = json.dumps(dict_form)
+            loaded_dict_form = json.loads(dict_form)
+            create_object_from_json(loaded_dict_form)
+
     return redirect('managing_photos:list_photo')
 
 def delete_all(request):
     """
     The function removes all objects from the Photo model along with photos from the media/img folder.
     """
-    for photo in Photo.objects.all():
-        photo.image.delete(save=True)
     Photo.objects.all().delete()
     return redirect('managing_photos:list_photo')
 
