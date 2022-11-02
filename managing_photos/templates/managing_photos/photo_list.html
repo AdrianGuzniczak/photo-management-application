@@ -41,7 +41,7 @@
                                     {% if photo.image %}
                                         <tr>
                                             <th scope="row">URL</th>
-                                            <td><a href="{{MEDIA_URL}}{{photo.image.url}}">{{MEDIA_URL}}{{photo.image.url}}</a></td>
+                                            <td><a href="{{MEDIA_URL}}{{photo.image.url}}">{{MEDIA_URL}}{{photo.image.url|slice:"0:35"}}</a></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Width</th>
