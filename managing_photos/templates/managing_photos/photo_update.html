@@ -3,7 +3,6 @@
 <div class="d-flex justify-content-center">
             <form method="post">
                 {% csrf_token %}
-                
                 <div class="form-group col">
                     <label class="col-sm-2 col-form-label">
                         <div class="badge bg-secondary text-wrap" style="width: 6rem;">
@@ -34,6 +33,7 @@
                         {{form.url}}
                     </div>
                 </div>
+                <br>
   
                 <input class="btn btn-primary" type="submit" value="Update!">
 

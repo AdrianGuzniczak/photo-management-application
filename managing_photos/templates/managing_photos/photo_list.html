@@ -43,6 +43,7 @@
                                             <th scope="row">URL</th>
                                             <td><a href="{{MEDIA_URL}}{{photo.image.url}}">{{MEDIA_URL}}{{photo.image.url|slice:"0:35"}}</a></td>
                                         </tr>
+                                        {% if photo.hexcolorDominant != '-------'%}
                                         <tr>
                                             <th scope="row">Width</th>
                                             <td>{{photo.width}}</td>
@@ -55,6 +56,7 @@
                                             <th scope="row">Dominant color</th>
                                             <td>{{photo.hexcolorDominant}}</td>
                                         </tr>
+                                        {% endif %}
                                     {% endif %}
                                 </tbody>
                             </table>

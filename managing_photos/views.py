@@ -7,8 +7,7 @@ from random import randrange
 import traceback
 from rest_framework.renderers import JSONRenderer
 import requests
-from django.views.generic import ListView, UpdateView, TemplateView
-from django.urls import reverse_lazy
+from django.views.generic import ListView, TemplateView
 from django.http import HttpResponse
 from django.core import files
 from django.shortcuts import redirect, render
@@ -30,10 +29,29 @@ class PhotoListView(ListView):
         context['form'] = PhotoForm()
         return context
 
-class PhotoUpdateView(UpdateView):
-    model = Photo
-    fields = ['title', 'albumId', 'url']
-    success_url = reverse_lazy('managing_photos:list_photo')
+def photo_update(request, id):
+    """
+    The function overwrites the object with the same id.
+    """
+    photo = Photo.objects.get(id=id)
+    form = PhotoForm(request.POST or None, instance=photo)
+
+    if form.is_valid():
+        dict_form = [{
+            'id': id,
+            'title': form.cleaned_data.get('title'),
+            'url': form.cleaned_data.get('url'),
+            'albumId': form.cleaned_data.get('albumId'),
+            'thumbnailUrl': form.cleaned_data.get('url')
+        }]
+        dict_form = json.dumps(dict_form)
+        loaded_dict_form = json.loads(dict_form)
+        create_object_from_json(loaded_dict_form)
+        return redirect('managing_photos:list_photo')
+
+    return render(request, 'managing_photos/photo_update.html', {
+        'photo': photo,
+        'form': form})
 
 class UploadFail(TemplateView):
     template_name = 'managing_photos/upload_fail.html'
@@ -87,7 +105,7 @@ def create_object_from_json(json_data):
             photo.image.save(file_name, files.File(lf))
         except:
             pass
-        
+
         photo.save()
     return True
 
