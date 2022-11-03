@@ -1,6 +1,7 @@
 import json
 import tempfile
 import urllib
+import shutil
 import urllib.request
 from io import BytesIO
 from random import randrange
@@ -89,6 +90,7 @@ def create_object_from_json(json_data):
             hex_dominat = ('#{:X}{:X}{:X}').format(
                 img_temp[0][0][0], img_temp[0][0][1], img_temp[0][0][1])
         except:
+            traceback.print_exc()
             hex_dominat = '-------'
             img = np.array([[0,0]])
 
@@ -120,7 +122,7 @@ def api_link(request):
             if create_object_from_json(json_data):
                 return redirect('managing_photos:list_photo')
     except:
-        print(traceback.format_exc())
+        traceback.print_exc()
         return redirect('managing_photos:upload_fail')
 
 def upload(request):
@@ -135,7 +137,7 @@ def upload(request):
             if create_object_from_json(json_data):
                 return redirect('managing_photos:list_photo')
     except:
-        print(traceback.format_exc())
+        traceback.print_exc()
         return redirect('managing_photos:upload_fail')
 
 def error_404_view(request, exception):
@@ -164,6 +166,7 @@ def delete_all(request):
     The function removes all objects from the Photo model along with photos from the media/img folder.
     """
     Photo.objects.all().delete()
+    shutil.rmtree('media/images')
     return redirect('managing_photos:list_photo')
 
 def delete_photo(request, id):
