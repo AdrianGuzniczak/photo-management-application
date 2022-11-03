@@ -7,13 +7,13 @@ This project uses, among others [Django](https://www.djangoproject.com/) and
 [Django REST framework](https://www.django-rest-framework.org/). 
 Bootstrap was used to create the frontend.
 
+![Alt text](Simple_application.png?raw=true)
 
 ## Setup project
 
 * Create and activate a [virtual environment](https://docs.python.org/3/library/venv.html) in the target folder (optional).
 * Clone the repository:
 
-![Alt text](Simple_application.png?raw=true)
 ```
   git clone https://github.com/AdrianGuzniczak/photo-management-application
 ```
