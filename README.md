@@ -1,7 +1,7 @@
 
 # photo-management-application
 
-photo-renovation-website is a Python project that allows you to manage, export, 
+photo-management-application is a Python project that allows users to manage, export, 
 and retrieve information about photos that you can upload in several ways. 
 This project uses, among others [Django](https://www.djangoproject.com/) and 
 [Django REST framework](https://www.django-rest-framework.org/). 
