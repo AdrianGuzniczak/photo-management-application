@@ -128,8 +128,9 @@ Control.ca-bundle
 Control.system-ca-bundle 
 GitHub.sublime-settings 
 
-#print Screen
+#Zone.Identifier
 Simple_application.png:Zone.Identifier
+README.md:Zone.Identifier
 
 # Visual Studio Code # 
 .vscode/* 

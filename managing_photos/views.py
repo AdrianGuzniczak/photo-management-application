@@ -87,8 +87,7 @@ def create_object_from_json(json_data):
             img_temp = img.copy()
             unique, counts = np.unique(img_temp.reshape(-1, 3), axis=0, return_counts=True)
             img_temp[:,:,0], img_temp[:,:,1], img_temp[:,:,2] = unique[np.argmax(counts)]
-            hex_dominat = ('#{:X}{:X}{:X}').format(
-                img_temp[0][0][0], img_temp[0][0][1], img_temp[0][0][1])
+            hex_dominat = '#' + f'{img_temp[0][0][0]:02x}{img_temp[0][0][1]:02x}{img_temp[0][0][1]:02x}'
         except:
             traceback.print_exc()
             hex_dominat = '-------'
